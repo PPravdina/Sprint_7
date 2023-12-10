@@ -7,23 +7,26 @@ import static org.hamcrest.Matchers.equalTo;
 
 public class CreateCourierTest extends TestSetup {
 
+    public CreateCourierTest() {
+        super(); // Передача базового URI из TestSetup в конструктор родителя
+    }
+
     @Test
     @DisplayName("Create courier successfully")
     @Description("В результате теста должен быть создан курьер")
     public void createCourierSuccessfully() {
         Response response = createCourier();
-
-        response.then().assertThat().body("ok", equalTo(true))
+        response.then().assertThat().statusCode(201)
                 .and()
-                .statusCode(201);
+                .body("ok", equalTo(true));
     }
 
     @Test
     @DisplayName("Create courier with duplicate login")
     @Description("Проверка, что нельзя создать два курьера с одинаковым логином")
     public void createCourierWithDuplicateLogin() {
-        // Попытка создать курьера с тем же логином
         createCourier();
+        // Попытка создать курьера с тем же логином
         Response response = createCourier();
 
         // Проверка, что возвращается ошибка с кодом 409 (Conflict)
@@ -45,6 +48,7 @@ public class CreateCourierTest extends TestSetup {
                 .and()
                 .body("message", equalTo("Недостаточно данных для создания учетной записи"));
     }
+
 
     @Test
     @DisplayName("Create courier without password")
@@ -69,8 +73,8 @@ public class CreateCourierTest extends TestSetup {
         Response response = createCourier();
 
         // Проверка, что firstName - необязательное
-        response.then().assertThat().body("ok", equalTo(true))
+        response.then().assertThat().statusCode(201)
                 .and()
-                .statusCode(201);
+                .body("ok", equalTo(true));
     }
 }

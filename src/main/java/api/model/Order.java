@@ -1,3 +1,5 @@
+package api.model;
+
 public class Order {
 
     private final String firstName;

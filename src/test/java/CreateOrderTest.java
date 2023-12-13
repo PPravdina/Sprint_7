@@ -13,7 +13,7 @@ import java.util.Collection;
 import static org.hamcrest.Matchers.notNullValue;
 
 @RunWith(Parameterized.class)
-public class CreateOrderTest extends TestSetup {
+public class CreateOrderTest extends BaseTest {
     private final Order order;
     private final OrdersClient ordersClient; // Добавляем orderClient
 

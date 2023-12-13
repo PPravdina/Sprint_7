@@ -6,7 +6,7 @@ import org.junit.Test;
 
 import static org.hamcrest.Matchers.*;
 
-public class GetOrderTest extends TestSetup {
+public class GetOrderTest extends BaseTest {
 
     private final OrdersClient ordersClient;
 

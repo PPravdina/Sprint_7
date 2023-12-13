@@ -1,36 +1,32 @@
+import api.client.CourierClient;
 import api.util.TestDataGenerator;
 import io.qameta.allure.Description;
 import io.qameta.allure.junit4.DisplayName;
 import io.restassured.response.Response;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.notNullValue;
 
-public class LoginCourierTest extends TestSetup {
+public class LoginCourierTest extends BaseTest {
 
-    private final TestDataGenerator testDataGenerator;
-
-    public LoginCourierTest() {
-        this.testDataGenerator = new TestDataGenerator();
-    }
+    @Override
     @Before
     public void setUp() {
-        // Создаем курьера перед выполнением каждого теста
-        createCourier();
+        super.setUp();
+        courierClient = new CourierClient(courier);
+        testDataGenerator = new TestDataGenerator();
+        courierClient.createCourier();
     }
 
     @Test
     @DisplayName("Login courier successfully")
     @Description("Успешная авторизация курьера")
     public void loginCourierSuccessfully() {
-        Response response = loginCourier();
+        Response response = courierClient.loginCourier();
 
-        response.then().assertThat().body("id", notNullValue())
-                .and()
-                .statusCode(200);
+        response.then().assertThat().statusCode(200).and().body("id", notNullValue());
     }
 
     @Test
@@ -39,11 +35,9 @@ public class LoginCourierTest extends TestSetup {
     public void loginCourierWithoutLogin() {
         courier.setLogin(null); // убираем логин
 
-        Response response = loginCourier();
+        Response response = courierClient.loginCourier();
 
-        response.then().assertThat().body("message", equalTo("Недостаточно данных для входа"))
-                .and()
-                .statusCode(400);
+        response.then().assertThat().statusCode(400).and().body("message", equalTo("Недостаточно данных для входа"));
     }
 
     @Test
@@ -52,11 +46,9 @@ public class LoginCourierTest extends TestSetup {
     public void loginCourierWithoutPassword() {
         courier.setPassword(null); // убираем пароль
 
-        Response response = loginCourier();
+        Response response = courierClient.loginCourier();
 
-        response.then().assertThat().body("message", equalTo("Недостаточно данных для входа"))
-                .and()
-                .statusCode(400);
+        response.then().assertThat().statusCode(400).and().body("message", equalTo("Недостаточно данных для входа"));
     }
 
     @Test
@@ -66,11 +58,9 @@ public class LoginCourierTest extends TestSetup {
         // Меняем пароль
         courier.setPassword(testDataGenerator.getRandomString(5)); // меняем пароль
 
-        Response response = loginCourier();
+        Response response = courierClient.loginCourier();
 
-        response.then().assertThat().body("message", equalTo("Учетная запись не найдена"))
-                .and()
-                .statusCode(404);
+        response.then().assertThat().statusCode(404).and().body("message", equalTo("Учетная запись не найдена"));
     }
 
     @Test
@@ -79,10 +69,8 @@ public class LoginCourierTest extends TestSetup {
     public void loginCourierWrongLogin() {
         // Меняем логин
         courier.setLogin(testDataGenerator.getRandomString(5)); // меняем логин
-        Response response = loginCourier();
+        Response response = courierClient.loginCourier();
 
-        response.then().assertThat().body("message", equalTo("Учетная запись не найдена"))
-                .and()
-                .statusCode(404);
+        response.then().assertThat().statusCode(404).and().body("message", equalTo("Учетная запись не найдена"));
     }
 }

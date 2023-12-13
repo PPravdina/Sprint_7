@@ -1,10 +1,8 @@
 package api.client;
 
 import api.model.Courier;
-import com.google.gson.Gson;
+import io.qameta.allure.Step;
 import io.restassured.response.Response;
-
-import java.util.Map;
 
 public class CourierClient extends BaseClient {
 
@@ -15,6 +13,7 @@ public class CourierClient extends BaseClient {
         this.courier = courier;
     }
 
+    @Step("Create courier")
     public Response createCourier() {
         return getRequestSpecification()
                 .and()
@@ -23,6 +22,7 @@ public class CourierClient extends BaseClient {
                 .post(COURIER_PATH);
     }
 
+    @Step("Login courier")
     public Response loginCourier() {
         Response response = getRequestSpecification()
                 .and()
@@ -30,13 +30,10 @@ public class CourierClient extends BaseClient {
                 .when()
                 .post(COURIER_PATH + "/login");
 
-        //String id = response.then().extract().path("id").toString();
-        //courier.setId(id);
-
         return response;
     }
 
-
+    @Step("Delete courier")
     public Response deleteCourier() {
         return getRequestSpecification()
                 .pathParam("id", courier.getId())

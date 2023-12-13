@@ -7,31 +7,21 @@ import org.junit.After;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 
-public class TestSetup {
-
-    private final CourierClient courierClient;
+public class BaseTest {
     protected Courier courier;
+    protected CourierClient courierClient;
+    protected TestDataGenerator testDataGenerator;
 
-    public TestSetup() {
-        initializeTestData(new TestDataGenerator());
-        courierClient = new CourierClient(courier);
+    @Step("Set up test data")
+    public void setUp() {
+        TestDataGenerator testDataGenerator = new TestDataGenerator();
+        initializeTestData(testDataGenerator);
     }
 
     private void initializeTestData(TestDataGenerator testDataGenerator) {
         courier = testDataGenerator.generateCourier();
     }
 
-    @Step("Create courier")
-    protected Response createCourier() {
-        return courierClient.createCourier();
-    }
-
-    @Step("Login courier")
-    protected Response loginCourier() {
-        return courierClient.loginCourier();
-    }
-
-    @Step("Delete courier")
     @After
     public void deleteCourier() {
         if (courier != null && courier.getId() != null) {
